@@ -1,15 +1,15 @@
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jcwatson11/typeqsfind/CI)
-![Travis (.com)](https://img.shields.io/travis/com/jcwatson11/typeqsfind)
-[![Coverage Status](https://coveralls.io/repos/jcwatson11/typeqsfind/badge.svg?branch=main)](https://coveralls.io/r/jcwatson11/typeqsfind?branch=main)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/jcwatson11/sequelizeqsfind/CI)
+![Travis (.com)](https://img.shields.io/travis/com/jcwatson11/sequelizeqsfind)
+[![Coverage Status](https://coveralls.io/repos/jcwatson11/sequelizeqsfind/badge.svg?branch=main)](https://coveralls.io/r/jcwatson11/sequelizeqsfind?branch=main)
 
-# TypeORM Query String Translator
+# Sequelize Query String Translator
 
-Translates the HTTP Query String from an Express Request object to a TypeORM FindManyOptions object.
+Translates the HTTP Query String from an Express Request object to a Sequelize FindOptions object.
 
 ## Installation
 
 ```bash
-npm i -S typeqsfind
+npm i -S sequelizeqsfind
 ```
 
 ## Usage
@@ -22,27 +22,7 @@ ID | Name | Level
 2 | Nancy | 11
 
 ```TypeScript
-import {typeqs} from "typeqsfind";
-import {FindManyOptions, createConnection, Repository} from "typeorm";
-import express from "express";
-import {Request, Response} from "express";
-import {User} from "./entity/User";
-import ormconfig from "./ormconfig";
-
-const app = express();
-
-let conn = await createConnection(ormconfig);
-
-app.get("/users", async (req: Request, res: Response) => {
-    let myOptions: FindManyOptions = typeqs.TranslateQuery(request);
-
-    // myOptions is now a TypeORM FindManyOptions object taken from the query string
-    let repo = getRepository(User);
-    let results = await repo.find(myOptions);
-    res.json(results);
-});
-
-app.listen(3000);
+// TODO
 
 ```
 ## Example Queries
