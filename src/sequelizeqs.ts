@@ -1,14 +1,14 @@
 import {Request} from 'express';
-import {FindManyOptions} from 'typeorm';
 import {WithTranslator} from './WithTranslator';
 import {WhereTranslator} from './WhereTranslator';
 import {PaginationTranslator} from './PaginationTranslator';
 import {OrderByTranslator} from './OrderByTranslator';
 import {OptionsTranslator} from './OptionsTranslator';
+import {FindOptions} from 'sequelize';
 
-export class typeqs {
-  public static TranslateQuery(req: Request): FindManyOptions  {
-    var options: FindManyOptions = {} as FindManyOptions;
+export class sequelizeqs {
+  public static TranslateQuery(req: Request): FindOptions  {
+    var options: FindOptions = {} as FindOptions;
 
     // Apply the options object from the querystring
     // or the body first. Then other querystring parameters
@@ -27,9 +27,9 @@ export class typeqs {
     OrderByTranslator.translate(req, options);
 
     // Process where clauses
-    WhereTranslator.translate(req, options);
+    options = WhereTranslator.translate(req, options);
 
     // Return options
-    return options as FindManyOptions;
+    return options as FindOptions;
   }
 }

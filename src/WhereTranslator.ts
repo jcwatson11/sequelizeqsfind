@@ -1,144 +1,213 @@
 import {Request} from 'express';
-import {FindManyOptions, IsNull, Not, FindOperator, Between, Like, MoreThan, LessThan, MoreThanOrEqual, LessThanOrEqual, ILike, In} from 'typeorm';
-import dot from 'dot-object';
+import {FindOptions,Op} from 'sequelize';
 
 export class WhereTranslator {
   // Set up some helper functions for orderBy
   //
-  public static wheres: {[key: string]: any} | {[key: string]: any}[];
-  
-  public static setNestedFieldValues(fieldName: string, value: string | string[] | FindOperator<any> | {[key: string]: any}[]) {
-    if(fieldName === '' && Array.isArray(value)) {
-      this.wheres = value;
-    }
+  public static wheres: {[key: string]: any|any[], include?:any[] } = {};
+
+  public static resolveSubWhere(dotRef:string) {
+    let where = this.wheres;
+    let fields:string[] = dotRef.split('.')
+    fields.map((field) => {
+      if(where.include !== undefined) {
+        let inc:any = where.include.find((item) => {
+          return item.model && item.model == field;
+        });
+        if(inc) {
+          where = inc;
+        } else {
+          inc = {model:field};
+          where.include.push(inc);
+          where = inc;
+        }
+      } else {
+        var inc:any = {model:field};
+        where.include = [inc];
+        where = inc;
+      }
+    });
+    return where;
+  }
+
+  public static setNestedFieldValue(fieldName: string, value: string | string[] | {[key: string]: any}[]) {
     if(fieldName.indexOf('.') !== -1) {
-      let obj: any = {};
-      let firstName: string = fieldName.split('.')[0];
-      obj[fieldName] = value;
-      dot.object(obj);
-      this.wheres[firstName] = obj[firstName];
+        let pathParts:string[] = fieldName.split('.');
+        let targetField: string = pathParts.pop();
+        let clause:any = this.resolveSubWhere(pathParts.join('.'));
+        clause.where = {[targetField]:value};
     } else {
-      this.wheres[fieldName] = value;
+      this.wheres.where = {...this.wheres.where,[fieldName]:value};
     }
   }
 
-  // orwhereField helper
-  public static OrWhere(fieldName: string, values: string[]): any {
-    let parts: string[] = fieldName.split('.');
-    let field: string = parts.pop();
-    let ret: any[] = values.map((val: string) => {
-      let ob: any = {};
-      ob[field] = val;
-      return ob;
-    })
-    return ret;
-  };
-
-
-  public static translate(req: Request, options: FindManyOptions): void {
+  public static translate(req: Request, options: FindOptions): FindOptions {
     // Begin processing WHERE options
     this.wheres = {};
 
     // Loop through request looking for where-type operators
     for(let name in req.query) {
       // Process whereField
+      const Or = (val:any[]):any => {
+        return {
+          [Op.or]: val
+        }
+      }
       if(name.indexOf('orwhere') === 0) {
         let fieldName: string = name.replace(/^orwhere/,'');
         let value: string[] = (<string[]>req.query[name]).map(value => value.toString());
-        this.setNestedFieldValues('', this.OrWhere(fieldName, value));
+        this.setNestedFieldValue(fieldName, Or(value));
       }
 
       // Process whereField
       if(name.indexOf('where') === 0) {
         let fieldName: string = name.replace(/^where/,'');
         let value: string = req.query[name].toString();
-        this.setNestedFieldValues(fieldName, value);
+        this.setNestedFieldValue(fieldName, value);
       }
 
+      const In = (val:any[]):any => {
+        return {
+          [Op.in]: val
+        }
+      }
       // Process inarrayField
       if(name.indexOf('inarray') === 0) {
         let fieldName: string = name.replace(/^inarray/,'');
         let value: string[] = (<string[]>req.query[name]).map(value => value.toString());
-        this.setNestedFieldValues(fieldName, In(value));
+        this.setNestedFieldValue(fieldName, In(value));
       }
 
+      const NotIn = (val:any[]):any => {
+        return {
+          [Op.notIn]: val
+        }
+      }
       // Process notinarrayField
       if(name.indexOf('notinarray') === 0) {
         let fieldName: string = name.replace(/^notinarray/,'');
         let value: string[] = (<string[]>req.query[name]).map(value => value.toString());
-        this.setNestedFieldValues(fieldName, Not(In(value)));
+        this.setNestedFieldValue(fieldName, NotIn(value));
       }
 
+      const IsNull = ():any => {
+        return {
+          [Op.is]: null
+        }
+      }
       // Process isnullField
       if(name.indexOf('isnull') === 0) {
         let fieldName: string = name.replace(/^isnull/,'');
-        this.setNestedFieldValues(fieldName, IsNull());
+        this.setNestedFieldValue(fieldName, IsNull());
       }
 
+      const NotNull = ():any => {
+        return {
+          [Op.not]: null
+        }
+      }
       // Process isnullField
       if(name.indexOf('isnotnull') === 0) {
         let fieldName: string = name.replace(/^isnotnull/,'');
-        this.setNestedFieldValues(fieldName, Not(IsNull()));
+        this.setNestedFieldValue(fieldName, NotNull());
       }
 
+      const Between = (val1:any, val2:any):any => {
+        return {
+          [Op.between]: [val1, val2]
+        }
+      }
       // Process betweenField
       if(name.indexOf('between') === 0) {
         let fieldName: string = name.replace(/^between/,'');
         let value: string[] = (<string[]>req.query[name]).map(value => value.toString());
-        this.setNestedFieldValues(fieldName, Between(value[0], value[1]));
+        this.setNestedFieldValue(fieldName, Between(value[0], value[1]));
       }
 
+      const Like = (val:any):any => {
+        return {
+          [Op.like]: val
+        }
+      }
       // Process likeField
       if(name.indexOf('like') === 0) {
         let fieldName: string = name.replace(/^like/,'');
         let value: string = req.query[name].toString();
-        this.setNestedFieldValues(fieldName, Like(value));
+        this.setNestedFieldValue(fieldName, Like(value));
       }
 
+      const ILike = (val:any):any => {
+        return {
+          [Op.iLike]: val
+        }
+      }
       // Process likeField
       if(name.indexOf('ilike') === 0) {
         let fieldName: string = name.replace(/^ilike/,'');
         let value: string = req.query[name].toString();
-        this.setNestedFieldValues(fieldName, ILike(value));
+        this.setNestedFieldValue(fieldName, ILike(value));
       }
 
+      const MoreThan = (val:number):any => {
+        return {
+          [Op.gt]: val
+        }
+      }
       // Process greaterthanField
       let gtMatcher = /^greaterthan(?!orequalto)/;
       if(name.match(gtMatcher)) {
         let fieldName: string = name.replace(gtMatcher,'');
-        let value: string = req.query[name].toString();
-        this.setNestedFieldValues(fieldName, MoreThan(value));
+        let value:number = parseInt(req.query[name].toString());
+        this.setNestedFieldValue(fieldName, MoreThan(value));
       }
 
+      const MoreThanOrEqual = (val:number):any => {
+        return {
+          [Op.gte]: val
+        }
+      }
       // Process greaterthanorequaltoField
       let gteMatcher = /^greaterthanorequalto/;
       if(name.match(gteMatcher)) {
         let fieldName: string = name.replace(gteMatcher,'');
-        let value: string = req.query[name].toString();
-        this.setNestedFieldValues(fieldName, MoreThanOrEqual(value));
+        let value: number = parseInt(req.query[name].toString());
+        this.setNestedFieldValue(fieldName, MoreThanOrEqual(value));
       }
 
+      const LessThan = (val:number):any => {
+        return {
+          [Op.lt]: val
+        }
+      }
       // Process lessthanField
       let ltMatcher = /^lessthan(?!orequalto)/;
       if(name.match(ltMatcher)) {
         let fieldName: string = name.replace(ltMatcher,'');
-        let value: string = req.query[name].toString();
-        this.setNestedFieldValues(fieldName, LessThan(value));
+        let value: number = parseInt(req.query[name].toString());
+        this.setNestedFieldValue(fieldName, LessThan(value));
       }
 
+      const LessThanOrEqual = (val:number):any => {
+        return {
+          [Op.lte]: val
+        }
+      }
       // Process lessthanorequaltoField
       let lteMatcher = /^lessthanorequalto/;
       if(name.match(lteMatcher)) {
         let fieldName: string = name.replace(lteMatcher,'');
-        let value: string = req.query[name].toString();
-        this.setNestedFieldValues(fieldName, LessThanOrEqual(value));
+        let value: number = parseInt(req.query[name].toString());
+        this.setNestedFieldValue(fieldName, LessThanOrEqual(value));
       }
 
     }
 
     // Set the wheres
     if(Object.keys(this.wheres).length !== 0) {
-      options.where = this.wheres;
+      let fo:FindOptions = {...options,...this.wheres};
+      return fo;
+    } else {
+      return options;
     }
   }
 }

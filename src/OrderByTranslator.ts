@@ -1,5 +1,5 @@
 import {Request} from 'express';
-import {FindManyOptions} from 'typeorm';
+import {FindOptions,Order,OrderItem} from 'sequelize';
 
 export class OrderByTranslator {
   // Set up some helper functions for orderby
@@ -9,18 +9,24 @@ export class OrderByTranslator {
     }
   }
 
-  static setSingleOrderBy(name: string, options: FindManyOptions): void {
-    options.order = options.order ? options.order:{};
+  static setSingleOrderBy(name: string, options: FindOptions): void {
+    let o:OrderItem;
     let parts: string[] = name.split('|');
+    let field:string = parts[0];
     if(parts.length > 1) {
       this.catchOrderByFormatError(parts[1], name);
-      options.order[parts[0]] = (parts[1]==='ASC') ? 'ASC':'DESC';
+      o = [field, parts[1]];
     } else {
-      options.order[name] = 'ASC';
+      o = [field, 'DESC'];
+    }
+    if(!options.order) {
+      options.order = [o];
+    } else {
+      options.order = [o].concat(<Array<any>>options.order).reverse();
     }
   };
 
-  public static translate(req: Request, options: FindManyOptions): void {
+  public static translate(req: Request, options: FindOptions): void {
     // Process orderby[]=Field|DESC syntax
     for(let name in req.query) {
       let orderbyMatcher = /^orderby$/;
@@ -40,7 +46,7 @@ export class OrderByTranslator {
       let obMatcher = /^orderby.+/;
       if(name.match(obMatcher)) {
         let fieldname: string = name.replace(/^orderby/,'');
-        let direction: string = (req.query[name]) ? req.query[name].toString():'ASC';
+        let direction: string = (req.query[name]) ? req.query[name].toString():'DESC';
         this.setSingleOrderBy(fieldname + '|' + direction, options);
       }
     }

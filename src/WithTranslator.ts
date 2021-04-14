@@ -1,12 +1,8 @@
 import {Request} from 'express';
-import {FindManyOptions} from 'typeorm';
-
-export const uniqueFilter = (v: string, i: number, a: any): boolean => {
-  return a.indexOf(v) === i;
-};
+import {FindOptions} from 'sequelize';
 
 export class WithTranslator {
-  public static translate(req: Request, options: FindManyOptions): void {
+  public static translate(req: Request, options: FindOptions): void {
     // Process with[] array of relation names
     if(req.query.with !== undefined) {
       let w: string[] = []
@@ -15,22 +11,27 @@ export class WithTranslator {
       } else {
         w = <string[]>req.query.with;
       }
+      let includes:any[] = [];
       w.forEach((rel, idx, a) => {
-        let nested: string[] = [];
         if(rel.indexOf('.') !== -1) {
-          let item: string = a.splice(idx, 1)[0];
-          let parts: string[] = item.split('.');
-          let cumulativeRelation: string[] = [];
-          let part: string = '';
-          while(part = parts.shift()) {
-            cumulativeRelation.push(part);
-            nested.push(cumulativeRelation.join('.'));
-          }
+          let names:string[] = rel.split('.').reverse();
+          names.map((val,i,ar) => {
+            let n:any = {
+              model: val
+            };
+            if(i!=0) {
+              n.include = ar[i-1];
+            }
+            ar[i] = n;
+          });
+          includes.push(names.pop());
+        } else {
+          includes.push({
+            model: a[idx]
+          });
         }
-        a.splice(idx,0,...nested);
       });
-      w = w.filter(uniqueFilter);
-      options.relations = w;
+      options.include = includes;
     }
   }
 }

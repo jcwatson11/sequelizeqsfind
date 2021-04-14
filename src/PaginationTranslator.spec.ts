@@ -1,11 +1,11 @@
 import 'mocha-typescript';
 import 'mocha';
 import "reflect-metadata";
-import {FindManyOptions} from 'typeorm';
+import {FindOptions} from 'sequelize';
 import {expect} from 'chai';
 import {Request} from 'express';
-import {typeqs} from './typeqs';
-const qt = typeqs.TranslateQuery;
+import {sequelizeqs} from './sequelizeqs';
+const qt = sequelizeqs.TranslateQuery;
 
 describe('With PaginationTranslator,', function() {
 
@@ -13,10 +13,10 @@ describe('With PaginationTranslator,', function() {
     it('can properly default the skip and take options', function() {
       let req: any = {query:{}} as Request;
       let expectedOptions: any = {
-         "skip": 0
-        ,"take": 10
-      } as FindManyOptions;
-      let options: FindManyOptions = qt(req);
+         "offset": 0
+        ,"limit": 10
+      } as FindOptions;
+      let options: FindOptions = qt(req);
       expect(options).to.deep.equal(expectedOptions);
     });
 
@@ -25,22 +25,22 @@ describe('With PaginationTranslator,', function() {
       req.query.limit = 20;
       req.query.offset = 40;
       let expectedOptions: any = {
-         "skip": 40 
-        ,"take": 20
-      } as FindManyOptions;
-      let options: FindManyOptions = qt(req);
+         "offset": 40 
+        ,"limit": 20
+      } as FindOptions;
+      let options: FindOptions = qt(req);
       expect(options).to.deep.equal(expectedOptions);
     });
 
-    it('can properly set the skip and take options with start and limit', function() {
+    it('can properly set the skip and take options with offset and limit', function() {
       let req: any = { query: {} } as Request;
       req.query.limit = 20;
-      req.query.start = 40;
+      req.query.offset = 40;
       let expectedOptions: any = {
-         "skip": 40 
-        ,"take": 20
-      } as FindManyOptions;
-      let options: FindManyOptions = qt(req);
+         "offset": 40 
+        ,"limit": 20
+      } as FindOptions;
+      let options: FindOptions = qt(req);
       expect(options).to.deep.equal(expectedOptions);
     });
   });

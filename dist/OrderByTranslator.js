@@ -1,10 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OrderByTranslator = exports.uniqueFilter = void 0;
-var uniqueFilter = function (v, i, a) {
-    return a.indexOf(v) === i;
-};
-exports.uniqueFilter = uniqueFilter;
+exports.OrderByTranslator = void 0;
 var OrderByTranslator = /** @class */ (function () {
     function OrderByTranslator() {
     }
@@ -28,12 +24,12 @@ var OrderByTranslator = /** @class */ (function () {
     ;
     OrderByTranslator.translate = function (req, options) {
         // Process orderby[]=Field|DESC syntax
-        for (var name in req.query) {
+        for (var name_1 in req.query) {
             var orderbyMatcher = /^orderby$/;
-            if (name.match(orderbyMatcher)) {
-                if (Array.isArray(req.query[name])) {
-                    for (var i = 0; i < req.query[name].length; i++) {
-                        var fieldname = req.query[name][i].toString();
+            if (name_1.match(orderbyMatcher)) {
+                if (Array.isArray(req.query[name_1])) {
+                    for (var i = 0; i < req.query[name_1].length; i++) {
+                        var fieldname = req.query[name_1][i].toString();
                         this.setSingleOrderBy(fieldname, options);
                     }
                 }
@@ -44,11 +40,9 @@ var OrderByTranslator = /** @class */ (function () {
             }
             // Process orderbyFieldname=DESC syntax
             var obMatcher = /^orderby.+/;
-            if (name.match(obMatcher)) {
-                var fieldname = name.replace(/^orderby/, '');
-                var direction = (req.query[name]) ? req.query[name].toString() : 'ASC';
-                if (!direction)
-                    direction = 'ASC';
+            if (name_1.match(obMatcher)) {
+                var fieldname = name_1.replace(/^orderby/, '');
+                var direction = (req.query[name_1]) ? req.query[name_1].toString() : 'ASC';
                 this.setSingleOrderBy(fieldname + '|' + direction, options);
             }
         }

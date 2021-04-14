@@ -8,10 +8,9 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WithTranslator = exports.uniqueFilter = void 0;
-var uniqueFilter = function (v, i, a) {
+exports.uniqueFilter = function (v, i, a) {
     return a.indexOf(v) === i;
 };
-exports.uniqueFilter = uniqueFilter;
 var WithTranslator = /** @class */ (function () {
     function WithTranslator() {
     }
