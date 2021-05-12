@@ -6,13 +6,13 @@ var PaginationTranslator = /** @class */ (function () {
     }
     PaginationTranslator.translate = function (req, options) {
         // Process offset and limit
-        options.skip =
+        options.offset =
             req.query.offset !== undefined ?
                 parseInt(req.query.offset.toString())
                 : req.query.start !== undefined ?
                     parseInt(req.query.start.toString())
                     : 0;
-        options.take =
+        options.limit =
             req.query.limit !== undefined ?
                 parseInt(req.query.limit.toString())
                 : 10;

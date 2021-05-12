@@ -1,6 +1,5 @@
 import { Request } from 'express';
-import { FindManyOptions } from 'typeorm';
-export declare const uniqueFilter: (v: string, i: number, a: any) => boolean;
+import { FindOptions } from 'sequelize';
 export declare class WithTranslator {
-    static translate(req: Request, options: FindManyOptions): void;
+    static translate(req: Request, options: FindOptions): void;
 }

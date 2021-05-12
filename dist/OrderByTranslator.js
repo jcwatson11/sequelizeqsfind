@@ -11,14 +11,21 @@ var OrderByTranslator = /** @class */ (function () {
         }
     };
     OrderByTranslator.setSingleOrderBy = function (name, options) {
-        options.order = options.order ? options.order : {};
+        var o;
         var parts = name.split('|');
+        var field = parts[0];
         if (parts.length > 1) {
             this.catchOrderByFormatError(parts[1], name);
-            options.order[parts[0]] = (parts[1] === 'ASC') ? 'ASC' : 'DESC';
+            o = [field, parts[1]];
         }
         else {
-            options.order[name] = 'ASC';
+            o = [field, 'DESC'];
+        }
+        if (!options.order) {
+            options.order = [o];
+        }
+        else {
+            options.order = [o].concat(options.order).reverse();
         }
     };
     ;
@@ -42,7 +49,7 @@ var OrderByTranslator = /** @class */ (function () {
             var obMatcher = /^orderby.+/;
             if (name_1.match(obMatcher)) {
                 var fieldname = name_1.replace(/^orderby/, '');
-                var direction = (req.query[name_1]) ? req.query[name_1].toString() : 'ASC';
+                var direction = (req.query[name_1]) ? req.query[name_1].toString() : 'DESC';
                 this.setSingleOrderBy(fieldname + '|' + direction, options);
             }
         }

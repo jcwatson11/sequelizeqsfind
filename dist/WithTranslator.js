@@ -1,16 +1,6 @@
 "use strict";
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WithTranslator = exports.uniqueFilter = void 0;
-exports.uniqueFilter = function (v, i, a) {
-    return a.indexOf(v) === i;
-};
+exports.WithTranslator = void 0;
 var WithTranslator = /** @class */ (function () {
     function WithTranslator() {
     }
@@ -24,22 +14,28 @@ var WithTranslator = /** @class */ (function () {
             else {
                 w = req.query.with;
             }
+            var includes_1 = [];
             w.forEach(function (rel, idx, a) {
-                var nested = [];
                 if (rel.indexOf('.') !== -1) {
-                    var item = a.splice(idx, 1)[0];
-                    var parts = item.split('.');
-                    var cumulativeRelation = [];
-                    var part = '';
-                    while (part = parts.shift()) {
-                        cumulativeRelation.push(part);
-                        nested.push(cumulativeRelation.join('.'));
-                    }
+                    var names = rel.split('.').reverse();
+                    names.map(function (val, i, ar) {
+                        var n = {
+                            model: val
+                        };
+                        if (i != 0) {
+                            n.include = ar[i - 1];
+                        }
+                        ar[i] = n;
+                    });
+                    includes_1.push(names.pop());
                 }
-                a.splice.apply(a, __spreadArrays([idx, 0], nested));
+                else {
+                    includes_1.push({
+                        model: a[idx]
+                    });
+                }
             });
-            w = w.filter(exports.uniqueFilter);
-            options.relations = w;
+            options.include = includes_1;
         }
     };
     return WithTranslator;

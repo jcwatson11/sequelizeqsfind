@@ -10,14 +10,13 @@ var OptionsTranslator = /** @class */ (function () {
     };
     OptionsTranslator.hasOptions = function (req) {
         return (req.query.options !== undefined
-            || req.body !== {});
+            || req.body !== undefined);
     };
     OptionsTranslator.translate = function (req) {
         // If there was a body to the GET request,
         // we assume that the body is an options object.
-        if (req.method === 'GET' && req.body !== {}) {
-            var options = JSON.parse(JSON.stringify(req.body));
-            return options;
+        if (req.method === 'GET' && req.body !== undefined) {
+            return JSON.parse(JSON.stringify(req.body));
         }
         // process raw options from querystring
         if (req.query.options !== undefined) {

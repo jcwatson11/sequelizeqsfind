@@ -1,15 +1,15 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.typeqs = void 0;
+exports.sequelizeqs = void 0;
 var WithTranslator_1 = require("./WithTranslator");
 var WhereTranslator_1 = require("./WhereTranslator");
 var PaginationTranslator_1 = require("./PaginationTranslator");
 var OrderByTranslator_1 = require("./OrderByTranslator");
 var OptionsTranslator_1 = require("./OptionsTranslator");
-var typeqs = /** @class */ (function () {
-    function typeqs() {
+var sequelizeqs = /** @class */ (function () {
+    function sequelizeqs() {
     }
-    typeqs.TranslateQuery = function (req) {
+    sequelizeqs.TranslateQuery = function (req) {
         var options = {};
         // Apply the options object from the querystring
         // or the body first. Then other querystring parameters
@@ -24,11 +24,11 @@ var typeqs = /** @class */ (function () {
         // Order the results
         OrderByTranslator_1.OrderByTranslator.translate(req, options);
         // Process where clauses
-        WhereTranslator_1.WhereTranslator.translate(req, options);
+        options = WhereTranslator_1.WhereTranslator.translate(req, options);
         // Return options
         return options;
     };
-    return typeqs;
+    return sequelizeqs;
 }());
-exports.typeqs = typeqs;
-//# sourceMappingURL=typeqs.js.map
+exports.sequelizeqs = sequelizeqs;
+//# sourceMappingURL=sequelizeqs.js.map

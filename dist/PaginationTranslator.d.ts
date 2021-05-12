@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { FindManyOptions } from 'typeorm';
+import { FindOptions } from 'sequelize';
 export declare class PaginationTranslator {
-    static translate(req: Request, options: FindManyOptions): void;
+    static translate(req: Request, options: FindOptions): void;
 }
