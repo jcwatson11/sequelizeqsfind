@@ -17,7 +17,7 @@ export class WithTranslator {
           let names:string[] = rel.split('.').reverse();
           names.map((val,i,ar) => {
             let n:any = {
-              model: val
+              association: val
             };
             if(i!=0) {
               n.include = ar[i-1];
@@ -27,7 +27,7 @@ export class WithTranslator {
           includes.push(names.pop());
         } else {
           includes.push({
-            model: a[idx]
+            association: a[idx]
           });
         }
       });

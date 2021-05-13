@@ -16,7 +16,7 @@ describe('With WithTranslator,', function() {
         "offset": 0
         ,"limit": 10
         ,"include": [{
-          "model": "Alternate"
+          "association": "Alternate"
         }]
       } as FindOptions;
       req.query.with = 'Alternate';
@@ -30,8 +30,8 @@ describe('With WithTranslator,', function() {
       let req: any = {query:{}} as Request;
       let expectedOptions: any = {
         "include": [
-          {model:"Alternate"}
-          ,{model:"MergedWith"}
+          {association:"Alternate"}
+          ,{association:"MergedWith"}
         ]
         ,"offset": 0
         ,"limit": 10
@@ -46,16 +46,16 @@ describe('With WithTranslator,', function() {
       let expectedOptions: any = {
          "include": [
            {
-             "model": "Alternate"
+             "association": "Alternate"
              ,"include": {
-               "model": "MergedWith"
+               "association": "MergedWith"
                ,"include": {
-                 "model": "Person"
+                 "association": "Person"
                }
              }
            }
            ,{
-             "model": "Secondary"
+             "association": "Secondary"
            }
          ]
          ,"limit": 10
