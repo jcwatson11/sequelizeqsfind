@@ -20,7 +20,7 @@ var WithTranslator = /** @class */ (function () {
                     var names = rel.split('.').reverse();
                     names.map(function (val, i, ar) {
                         var n = {
-                            model: val
+                            association: val
                         };
                         if (i != 0) {
                             n.include = ar[i - 1];
@@ -31,7 +31,7 @@ var WithTranslator = /** @class */ (function () {
                 }
                 else {
                     includes_1.push({
-                        model: a[idx]
+                        association: a[idx]
                     });
                 }
             });
