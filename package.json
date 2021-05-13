@@ -1,6 +1,6 @@
 {
   "name": "@jcwatson11/sequelizeqsfind",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Turns express request query parameters into Sequelize FindManyOptions for use with Sequelize's Model.findAll().",
   "repository": {
     "type": "git",
