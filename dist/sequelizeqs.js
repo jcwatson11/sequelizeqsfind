@@ -31,4 +31,7 @@ var sequelizeqs = /** @class */ (function () {
     return sequelizeqs;
 }());
 exports.sequelizeqs = sequelizeqs;
+;
+var OperatorAliases_1 = require("./OperatorAliases");
+Object.defineProperty(exports, "OperatorAliases", { enumerable: true, get: function () { return OperatorAliases_1.OperatorAliases; } });
 //# sourceMappingURL=sequelizeqs.js.map

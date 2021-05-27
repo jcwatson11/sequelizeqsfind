@@ -32,4 +32,6 @@ export class sequelizeqs {
     // Return options
     return options as FindOptions;
   }
-}
+};
+
+export {OperatorAliases} from './OperatorAliases';
