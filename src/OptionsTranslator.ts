@@ -10,7 +10,7 @@ export class OptionsTranslator {
 
   public static hasOptions(req: Request): boolean {
     return (
-      req.query.options !== undefined
+      (req.query.options && req.query.options !== '')
       || (req.body && Object.keys(req.body).length > 0)
     );
   }
@@ -23,7 +23,7 @@ export class OptionsTranslator {
       return JSON.parse(JSON.stringify(req.body)) as FindOptions;
     }
     // process raw options from querystring
-    if(req.query.options !== undefined) {
+    if((req.query.options && req.query.options !== '')) {
       let optsJson: any = this.decode(req.query.options.toString());
       let options: FindOptions;
       try {

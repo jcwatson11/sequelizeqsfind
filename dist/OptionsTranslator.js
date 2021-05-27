@@ -9,17 +9,17 @@ var OptionsTranslator = /** @class */ (function () {
         return buff.toString('utf-8');
     };
     OptionsTranslator.hasOptions = function (req) {
-        return (req.query.options !== undefined
-            || req.body != {});
+        return ((req.query.options && req.query.options !== '')
+            || (req.body && Object.keys(req.body).length > 0));
     };
     OptionsTranslator.translate = function (req) {
         // If there was a body to the GET request,
         // we assume that the body is an options object.
-        if (req.method === 'GET' && req.body != {}) {
+        if (req.method === 'GET' && (req.body && Object.keys(req.body).length > 0)) {
             return JSON.parse(JSON.stringify(req.body));
         }
         // process raw options from querystring
-        if (req.query.options !== undefined) {
+        if ((req.query.options && req.query.options !== '')) {
             var optsJson = this.decode(req.query.options.toString());
             var options = void 0;
             try {
