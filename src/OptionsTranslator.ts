@@ -11,7 +11,7 @@ export class OptionsTranslator {
   public static hasOptions(req: Request): boolean {
     return (
       req.query.options !== undefined
-      || req.body !== undefined
+      || req.body != {}
     );
   }
 
@@ -19,7 +19,7 @@ export class OptionsTranslator {
 
     // If there was a body to the GET request,
     // we assume that the body is an options object.
-    if(req.method === 'GET' && req.body !== undefined) {
+    if(req.method === 'GET' && req.body != {}) {
       return JSON.parse(JSON.stringify(req.body)) as FindOptions;
     }
     // process raw options from querystring

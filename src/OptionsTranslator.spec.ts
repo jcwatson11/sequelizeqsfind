@@ -11,7 +11,7 @@ describe('With OptionsTranslator,', function() {
 
   describe('when providing an encoded options json object, it', function() {
     it('can decode and set the options properly', function() {
-      let req: any = { query: {} } as Request;
+      let req: any = { query: {}, body: {} } as Request;
       req.query.options = 'eyJvZmZzZXQiOiAwLCJsaW1pdCI6IDEwLCJvcmRlciI6IFtbImZpZWxkMSIsICJERVNDIl1dfQ==';
       let expectedOptions: any = {
         limit: 10
@@ -35,7 +35,7 @@ describe('With OptionsTranslator,', function() {
     });
 
     it('can set options properly from the request body', function() {
-      let req: any = { query: {} } as Request;
+      let req: any = { query: {}, body: {} } as Request;
       req.method = 'GET';
       req.body = {
         order: [
