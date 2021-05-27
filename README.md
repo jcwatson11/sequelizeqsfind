@@ -22,7 +22,17 @@ ID | Name | Level
 2 | Nancy | 11
 
 ```TypeScript
-// TODO
+import {sequelizeqs} from '@jcwatson11/sequelizeqsfind';
+const qt = sequelizeqs.TranslateQuery;
+
+let options:FindOptions = qt(req);
+
+// get instance of your model. (ex. User)
+User.findAll(options);
+
+// OR, if your querystring adds association includes with the 'with' parameter:
+
+User.findOne(1,options);
 
 ```
 ## Example Queries
