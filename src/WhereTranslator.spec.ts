@@ -284,6 +284,27 @@ describe('With WhereTranslator,', function() {
   });
 
   describe('when processing like and ilike, it', function() {
+    it('can properly URI decod wild card characters coming from the client', function() {
+      let req: any = { query: {} } as Request;
+      req.query['likeAlternate.Person.StringField'] = "%25name%25";
+      let expectedOptions: any = {
+        offset: 0
+        ,limit: 10
+        ,include: [{
+          model: "Alternate"
+          ,include: [{
+            model: "Person"
+            ,where: {
+              StringField: {[Op.like]: "%name%"}
+            }
+          }]
+        }]
+      } as FindOptions;
+      expectedOptions = expectedOptions;
+      let options: any = qt(req);
+      expect(options).to.deep.equal(expectedOptions);
+    });
+
     it('can set the options properly for finding like values', function() {
       let req: any = { query: {} } as Request;
       req.query['likeAlternate.Person.StringField'] = "%name%";

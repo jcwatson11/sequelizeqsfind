@@ -31,6 +31,9 @@ export class WhereTranslator {
   }
 
   public static setNestedFieldValue(fieldName: string, value: string | string[] | {[key: string]: any}[]) {
+    if(typeof value === 'string') {
+      value = decodeURIComponent(value);
+    }
     if(fieldName.indexOf('.') !== -1) {
         let pathParts:string[] = fieldName.split('.');
         let targetField: string = pathParts.pop();

@@ -43,6 +43,9 @@ var WhereTranslator = /** @class */ (function () {
     };
     WhereTranslator.setNestedFieldValue = function (fieldName, value) {
         var _a, _b;
+        if (typeof value === 'string') {
+            value = decodeURIComponent(value);
+        }
         if (fieldName.indexOf('.') !== -1) {
             var pathParts = fieldName.split('.');
             var targetField = pathParts.pop();
