@@ -4,12 +4,12 @@
   "description": "Turns express request query parameters into Sequelize FindManyOptions for use with Sequelize's Model.findAll().",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jcwatson11/typeqsfind.git"
+    "url": "git+https://github.com/jcwatson11/sequelizeqsfind.git"
   },
   "bugs": {
-    "url": "https://github.com/jcwatson11/typeqsfind/issues"
+    "url": "https://github.com/jcwatson11/sequelizeqsfind/issues"
   },
-  "homepage": "https://github.com/jcwatson11/typeqsfind#readme",
+  "homepage": "https://github.com/jcwatson11/sequelizeqsfind#readme",
   "keywords": [
     "Sequelize",
     "http",
@@ -36,8 +36,8 @@
     "coverage": "nyc npm run test && nyc report --reporter=text-lcov | coveralls",
     "typedoc": "typedoc --out ./docs --exclude \"**/*.spec.ts,**/*.d.ts\" --tsconfig ./tsconfig.json ./src"
   },
-  "main": "dist/typeqs.js",
-  "types": "dist/typeqs.d.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.js",
   "devDependencies": {
     "@types/chai": "^4.2.14",
     "@types/mocha": "^8.2.0",
